@@ -1,0 +1,311 @@
+#include <iostream>
+using namespace std;
+
+const int MAX = 100;
+const int MAX_MATRIZ = 20;
+const int LIMITE_DIGITOS = 9999;  // Máximo 4 dígitos
+
+// ============================================
+// PROCEDIMIENTOS DE VALIDACIÓN
+// ============================================
+
+// Procedimiento para limpiar el buffer de entrada
+void limpiarBuffer() {
+    cin.clear();
+    cin.ignore(10000, '\n');
+}
+
+// Función para validar que la entrada sea un número entero
+int leerEntero(const char* mensaje) {
+    int valor;
+    while (true) {
+        cout << mensaje;
+        if (cin >> valor) {
+            // Verificar si el número tiene más de 4 dígitos
+            if (valor > LIMITE_DIGITOS || valor < -LIMITE_DIGITOS) {
+                cout << "\n*** ERROR: El numero no puede tener mas de 4 digitos ***" << endl;
+                cout << "*** El valor maximo permitido es " << LIMITE_DIGITOS << " ***\n" << endl;
+                limpiarBuffer();
+            } else {
+                limpiarBuffer();
+                return valor;
+            }
+        } else {
+            cout << "\n*** ERROR: Debe ingresar un numero entero valido ***" << endl;
+            cout << "*** No se permiten letras ni caracteres especiales ***\n" << endl;
+            limpiarBuffer();
+        }
+    }
+}
+
+// Función para validar que la entrada sea un número positivo
+int leerEnteroPositivo(const char* mensaje) {
+    int valor;
+    while (true) {
+        valor = leerEntero(mensaje);
+        if (valor > 0) {
+            return valor;
+        } else {
+            cout << "\n*** ERROR: El numero debe ser mayor que cero ***\n" << endl;
+        }
+    }
+}
+
+// ============================================
+// PROCEDIMIENTOS DEL MENÚ
+// ============================================
+
+// Procedimiento para mostrar el menú principal
+void mostrarMenu() {
+    cout << "\n========================================" << endl;
+    cout << "         MENU PRINCIPAL - C++           " << endl;
+    cout << "========================================" << endl;
+    cout << "  1. Serie Aritmetica en Vector         " << endl;
+    cout << "  2. Serie Aritmetica en Matriz         " << endl;
+    cout << "  3. Calcular Factorial                 " << endl;
+    cout << "  4. Serie de Fibonacci                 " << endl;
+    cout << "  5. Salir                              " << endl;
+    cout << "========================================" << endl;
+    cout << "  NOTA: Los numeros no pueden tener     " << endl;
+    cout << "        mas de 4 digitos (max 9999)     " << endl;
+    cout << "========================================" << endl;
+}
+
+// Procedimiento para pausar la pantalla
+void pausar() {
+    cout << "\nPresione ENTER para continuar...";
+    cin.get();
+}
+
+// ============================================
+// OPCIÓN 1: SERIE ARITMÉTICA EN VECTOR
+// ============================================
+void serieAritmeticaVector() {
+    cout << "\n--- SERIE ARITMETICA EN VECTOR ---" << endl;
+    
+    int a1 = leerEntero("Ingrese el primer termino (a1): ");
+    int d = leerEntero("Ingrese la diferencia (d): ");
+    int n = leerEnteroPositivo("Ingrese la cantidad de terminos (n): ");
+    
+    // Validar que n no exceda el tamaño máximo
+    if (n > MAX) {
+        cout << "\n*** ERROR: El numero de terminos no puede exceder " << MAX << " ***" << endl;
+        pausar();
+        return;
+    }
+    
+    int vector[MAX];
+    
+    // Llenar el vector
+    for (int i = 0; i < n; i++) {
+        vector[i] = a1 + (i * d);
+    }
+    
+    // Mostrar el vector
+    cout << "\nSerie: ";
+    for (int i = 0; i < n; i++) {
+        cout << vector[i];
+        if (i < n - 1) cout << ", ";
+    }
+    cout << endl;
+    
+    // Calcular suma
+    int suma = 0;
+    for (int i = 0; i < n; i++) {
+        suma += vector[i];
+    }
+    cout << "Suma de la serie: " << suma << endl;
+    
+    // Mostrar mayor y menor
+    int mayor = vector[0];
+    int menor = vector[0];
+    for (int i = 1; i < n; i++) {
+        if (vector[i] > mayor) mayor = vector[i];
+        if (vector[i] < menor) menor = vector[i];
+    }
+    cout << "Mayor: " << mayor << endl;
+    cout << "Menor: " << menor << endl;
+    
+    // Calcular promedio (sin setprecision)
+    double promedio = (double)suma / n;
+    cout << "Promedio: " << promedio << endl;
+    
+    pausar();
+}
+
+// ============================================
+// OPCIÓN 2: SERIE ARITMÉTICA EN MATRIZ
+// ============================================
+void serieAritmeticaMatriz() {
+    cout << "\n--- SERIE ARITMETICA EN MATRIZ ---" << endl;
+    
+    int a1 = leerEntero("Ingrese el primer termino (a1): ");
+    int d = leerEntero("Ingrese la diferencia (d): ");
+    int filas = leerEnteroPositivo("Ingrese el numero de filas: ");
+    int columnas = leerEnteroPositivo("Ingrese el numero de columnas: ");
+    
+    // Validar dimensiones
+    if (filas > MAX_MATRIZ || columnas > MAX_MATRIZ) {
+        cout << "\n*** ERROR: Las dimensiones no pueden exceder " << MAX_MATRIZ << " ***" << endl;
+        pausar();
+        return;
+    }
+    
+    int matriz[MAX_MATRIZ][MAX_MATRIZ];
+    
+    // Llenar la matriz
+    int contador = 0;
+    for (int i = 0; i < filas; i++) {
+        for (int j = 0; j < columnas; j++) {
+            matriz[i][j] = a1 + (contador * d);
+            contador++;
+        }
+    }
+    
+    // Mostrar la matriz (sin setw, usando tabuladores)
+    cout << "\n--- MATRIZ RESULTANTE ---" << endl;
+    for (int i = 0; i < filas; i++) {
+        for (int j = 0; j < columnas; j++) {
+            cout << matriz[i][j] << "\t";
+        }
+        cout << endl;
+    }
+    
+    // Calcular suma total
+    int suma = 0;
+    for (int i = 0; i < filas; i++) {
+        for (int j = 0; j < columnas; j++) {
+            suma += matriz[i][j];
+        }
+    }
+    cout << "\nSuma total: " << suma << endl;
+    
+    // Suma por filas
+    cout << "\n--- SUMA POR FILAS ---" << endl;
+    for (int i = 0; i < filas; i++) {
+        int sumaFila = 0;
+        for (int j = 0; j < columnas; j++) {
+            sumaFila += matriz[i][j];
+        }
+        cout << "Fila " << (i + 1) << ": " << sumaFila << endl;
+    }
+    
+    // Suma por columnas
+    cout << "\n--- SUMA POR COLUMNAS ---" << endl;
+    for (int j = 0; j < columnas; j++) {
+        int sumaColumna = 0;
+        for (int i = 0; i < filas; i++) {
+            sumaColumna += matriz[i][j];
+        }
+        cout << "Columna " << (j + 1) << ": " << sumaColumna << endl;
+    }
+    
+    pausar();
+}
+
+// ============================================
+// OPCIÓN 3: CALCULAR FACTORIAL
+// ============================================
+void calcularFactorial() {
+    cout << "\n--- CALCULAR FACTORIAL ---" << endl;
+    
+    int n = leerEnteroPositivo("Ingrese un numero para calcular su factorial: ");
+    
+    // Validar que n no sea demasiado grande
+    if (n > 12) {
+        cout << "\n*** ADVERTENCIA: El factorial de " << n << " es muy grande ***" << endl;
+        cout << "*** Se recomienda usar numeros menores o iguales a 12 ***" << endl;
+        cout << "*** Desea continuar? (1=Si, 0=No): ";
+        int opcion;
+        cin >> opcion;
+        limpiarBuffer();
+        if (opcion != 1) {
+            return;
+        }
+    }
+    
+    // Calcular factorial
+    long long factorial = 1;
+    for (int i = 1; i <= n; i++) {
+        factorial *= i;
+    }
+    
+    cout << "\nEl factorial de " << n << " es: " << factorial << endl;
+    
+    pausar();
+}
+
+// ============================================
+// OPCIÓN 4: SERIE DE FIBONACCI
+// ============================================
+void serieFibonacci() {
+    cout << "\n--- SERIE DE FIBONACCI ---" << endl;
+    
+    int n = leerEnteroPositivo("Ingrese la cantidad de terminos: ");
+    
+    // Validar que n no sea demasiado grande
+    if (n > 50) {
+        cout << "\n*** ERROR: El numero de terminos no puede exceder 50 ***" << endl;
+        pausar();
+        return;
+    }
+    
+    // Casos base
+    if (n == 1) {
+        cout << "\nSerie: 0" << endl;
+    } else if (n >= 2) {
+        long long a = 0, b = 1;
+        cout << "\nSerie: " << a << ", " << b;
+        
+        for (int i = 3; i <= n; i++) {
+            long long c = a + b;
+            cout << ", " << c;
+            a = b;
+            b = c;
+        }
+        cout << endl;
+    }
+    
+    pausar();
+}
+
+// ============================================
+// PROGRAMA PRINCIPAL
+// ============================================
+int main() {
+    int opcion;
+    
+    do {
+        mostrarMenu();
+        
+        opcion = leerEntero("Ingrese una opcion (1-5): ");
+        
+        switch (opcion) {
+            case 1:
+                serieAritmeticaVector();
+                break;
+            case 2:
+                serieAritmeticaMatriz();
+                break;
+            case 3:
+                calcularFactorial();
+                break;
+            case 4:
+                serieFibonacci();
+                break;
+            case 5:
+                cout << "\n========================================" << endl;
+                cout << "   Gracias por usar el programa.        " << endl;
+                cout << "   Hasta luego!                         " << endl;
+                cout << "========================================" << endl;
+                break;
+            default:
+                cout << "\n*** ERROR: Opcion no valida ***" << endl;
+                cout << "*** Por favor, ingrese un numero entre 1 y 5 ***" << endl;
+                pausar();
+                break;
+        }
+    } while (opcion != 5);
+    
+    return 0;
+}
